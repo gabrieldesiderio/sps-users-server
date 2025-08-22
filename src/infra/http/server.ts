@@ -10,8 +10,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { env } from '@/env'
 import { errorHandler } from './error-handler'
-import { auth } from './middlewares/auth'
-import { usersModule } from './routes/users/_index'
+import { appRoutes } from './routes'
 
 const server = fastify({ logger: true })
 
@@ -43,7 +42,7 @@ server.register(fastifySwagger, {
 })
 server.register(fastifySwaggerUi, { routePrefix: '/docs' })
 
-server.register(usersModule, { prefix: 'users' })
+server.register(appRoutes)
 
 server.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
 	console.log('HTTP server running! 🚀')

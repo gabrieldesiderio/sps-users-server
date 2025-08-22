@@ -11,7 +11,7 @@ export const deleteUserRoute: FastifyPluginAsyncZod<{
 	const { usersRepository } = opts
 
 	server.register(auth).delete(
-		'/:userId',
+		'/users/:userId',
 		{
 			schema: {
 				tags: ['Users'],

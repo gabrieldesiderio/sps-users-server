@@ -12,7 +12,7 @@ export const fetchAllUsersRoute: FastifyPluginAsyncZod<{
 	const { usersRepository } = opts
 
 	server.register(auth).get(
-		'',
+		'/users',
 		{
 			schema: {
 				tags: ['Users'],

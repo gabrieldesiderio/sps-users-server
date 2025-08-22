@@ -11,7 +11,7 @@ export const editUserRoute: FastifyPluginAsyncZod<{
 	const { usersRepository } = opts
 
 	server.register(auth).put(
-		'/:userId',
+		'/users/:userId',
 		{
 			schema: {
 				tags: ['Users'],
