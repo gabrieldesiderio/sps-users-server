@@ -1,47 +1,50 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import type { UsersRepository } from '@/domain/application/repositories/user-repository'
-import { EditUserUseCase } from '@/domain/application/use-cases/users/edit-user'
+import { FindUserByIdUseCase } from '@/domain/application/use-cases/users/find-user-by-id'
 import { isRight, unwrapEither } from '@/infra/shared/either'
 import { auth } from '../../middlewares/auth'
+import { UserPresenter } from '../../presenters/user-presenter'
 
-export const editUserRoute: FastifyPluginAsyncZod<{
+export const findUserByIdRoute: FastifyPluginAsyncZod<{
 	usersRepository: UsersRepository
 }> = async (server, opts) => {
 	const { usersRepository } = opts
 
-	server.register(auth).put(
+	server.register(auth).get(
 		'/users/:userId',
 		{
 			schema: {
 				tags: ['Users'],
-				summary: 'Edit an user',
+				summary: 'Find User by ID',
 				security: [{ bearerAuth: [] }],
 				params: z.object({
 					userId: z.uuid(),
 				}),
-				body: z.object({
-					name: z.string().nonempty(),
-					email: z.email(),
-					password: z.string().nonempty(),
-					type: z.enum(['admin', 'default']),
-				}),
 				response: {
-					200: z.null().describe('User updated'),
+					200: z.object({
+						user: z.object({
+							id: z.uuid(),
+							name: z.string(),
+							email: z.email(),
+							password: z.string(),
+							type: z.enum(['admin', 'default']),
+							createdAt: z.date(),
+							updatedAt: z.date(),
+						}),
+					}),
 					404: z.object({ message: z.string() }),
-					409: z.object({ message: z.string() }),
 				},
 			},
 		},
 		async (request, reply) => {
-			const useCase = new EditUserUseCase(usersRepository)
-			const result = await useCase.execute({
-				...request.body,
-				userId: request.params.userId,
-			})
+			const useCase = new FindUserByIdUseCase(usersRepository)
+			const result = await useCase.execute({ userId: request.params.userId })
 
 			if (isRight(result)) {
-				return reply.status(200).send()
+				const { user } = unwrapEither(result)
+
+				return reply.status(200).send({ user: UserPresenter.toHTTP(user) })
 			}
 
 			const error = unwrapEither(result)
@@ -49,8 +52,6 @@ export const editUserRoute: FastifyPluginAsyncZod<{
 			switch (error.constructor.name) {
 				case 'NotFoundError':
 					return reply.status(404).send({ message: error.message })
-				case 'ConflictError':
-					return reply.status(409).send({ message: error.message })
 			}
 		}
 	)

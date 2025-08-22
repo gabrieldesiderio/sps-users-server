@@ -25,7 +25,9 @@ server.register(fastifyCors, {
 	origin: env.FRONT_END_URL,
 	credentials: true,
 })
-server.register(fastifyJwt, { secret: env.JWT_SECRET })
+server.register(fastifyJwt, {
+	secret: env.JWT_SECRET,
+})
 
 server.register(fastifySwagger, {
 	openapi: {

@@ -27,6 +27,7 @@ export const fetchAllUsersRoute: FastifyPluginAsyncZod<{
 									name: z.string(),
 									email: z.email(),
 									password: z.string(),
+									type: z.enum(['admin', 'default']),
 									createdAt: z.date(),
 									updatedAt: z.date(),
 								})

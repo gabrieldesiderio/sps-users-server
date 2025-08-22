@@ -21,6 +21,7 @@ export const createUserRoute: FastifyPluginAsyncZod<{
 					name: z.string().nonempty(),
 					email: z.email(),
 					password: z.string().nonempty(),
+					type: z.enum(['admin', 'default']),
 				}),
 				response: {
 					201: z.null().describe('User created'),

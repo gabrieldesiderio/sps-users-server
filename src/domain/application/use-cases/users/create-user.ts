@@ -7,6 +7,7 @@ interface CreateUserUseCaseRequest {
 	name: string
 	email: string
 	password: string
+	type: 'admin' | 'default'
 }
 
 type CreateUserUseCaseResponse = Either<ConflictError, { user: User }>
@@ -18,6 +19,7 @@ export class CreateUserUseCase {
 		name,
 		email,
 		password,
+		type,
 	}: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
 		const userWithTheSameEmail = await this.usersRepository.findByEmail(email)
 
@@ -31,6 +33,7 @@ export class CreateUserUseCase {
 			name,
 			email,
 			password,
+			type,
 			createdAt: new Date(),
 		})
 

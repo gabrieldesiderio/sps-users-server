@@ -8,6 +8,7 @@ interface EditUserUseCaseRequest {
 	name: string
 	email: string
 	password: string
+	type: 'admin' | 'default'
 }
 
 type EditUserUseCaseResponse = Either<NotFoundError | ConflictError, null>
@@ -20,6 +21,7 @@ export class EditUserUseCase {
 		name,
 		email,
 		password,
+		type,
 	}: EditUserUseCaseRequest): Promise<EditUserUseCaseResponse> {
 		const user = await this.usersRepository.findById(userId)
 
@@ -38,6 +40,7 @@ export class EditUserUseCase {
 		user.name = name
 		user.email = email
 		user.password = password
+		user.type = type
 
 		await this.usersRepository.save(user)
 

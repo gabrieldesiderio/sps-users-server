@@ -5,6 +5,7 @@ export interface UserProps {
 	name: string
 	email: string
 	password: string
+	type: 'admin' | 'default'
 	createdAt: Date
 	updatedAt?: Date
 }
@@ -34,6 +35,15 @@ export class User extends Entity<UserProps> {
 
 	set password(password: string) {
 		this.props.password = password
+		this.touch()
+	}
+
+	get type() {
+		return this.props.type
+	}
+
+	set type(type: 'admin' | 'default') {
+		this.props.type = type
 		this.touch()
 	}
 

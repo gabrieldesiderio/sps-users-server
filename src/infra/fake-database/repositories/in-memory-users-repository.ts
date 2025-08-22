@@ -6,6 +6,7 @@ export class InMemoryUsersRepository implements UsersRepository {
 		name: 'Admin',
 		email: 'admin@sps.com',
 		password: 'admin123',
+		type: 'admin',
 		createdAt: new Date(),
 	})
 

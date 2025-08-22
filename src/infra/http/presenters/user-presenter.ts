@@ -7,6 +7,7 @@ export class UserPresenter {
 			name: user.name,
 			email: user.email,
 			password: user.password,
+			type: user.type,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
 		}
