@@ -24,6 +24,7 @@ server.register(fastifyCookie)
 server.register(fastifyCors, {
 	origin: env.FRONT_END_URL,
 	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 })
 server.register(fastifyJwt, {
 	secret: env.JWT_SECRET,
