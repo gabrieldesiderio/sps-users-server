@@ -27,6 +27,10 @@ server.register(fastifyCors, {
 })
 server.register(fastifyJwt, {
 	secret: env.JWT_SECRET,
+	cookie: {
+		cookieName: 'token',
+		signed: false,
+	},
 })
 
 server.register(fastifySwagger, {
