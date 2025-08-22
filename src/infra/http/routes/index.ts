@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { InMemoryUsersRepository } from '@/infra/fake-database/repositories/in-memory-users-repository'
 import { authenticateWithCredentialsRoute } from './auth/authenticate-with-credentials'
+import { logoutRoute } from './auth/logout'
 import { profileRoute } from './auth/profile'
 import { createUserRoute } from './users/create-user'
 import { deleteUserRoute } from './users/delete-user'
@@ -15,6 +16,7 @@ export async function appRoutes(app: FastifyInstance) {
 	 * Auth routes
 	 */
 	app.register(authenticateWithCredentialsRoute, { usersRepository })
+	app.register(logoutRoute)
 	app.register(profileRoute, { usersRepository })
 
 	/**
