@@ -3,18 +3,20 @@ import { z } from 'zod'
 import type { UsersRepository } from '@/domain/application/repositories/user-repository'
 import { EditUserUseCase } from '@/domain/application/use-cases/users/edit-user'
 import { isRight, unwrapEither } from '@/infra/shared/either'
+import { auth } from '../../middlewares/auth'
 
 export const editUserRoute: FastifyPluginAsyncZod<{
 	usersRepository: UsersRepository
 }> = async (server, opts) => {
 	const { usersRepository } = opts
 
-	server.put(
-		'/users/:userId',
+	server.register(auth).put(
+		'/:userId',
 		{
 			schema: {
 				tags: ['Users'],
 				summary: 'Edit an user',
+				security: [{ bearerAuth: [] }],
 				params: z.object({
 					userId: z.uuid(),
 				}),

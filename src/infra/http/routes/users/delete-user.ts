@@ -3,18 +3,20 @@ import { z } from 'zod'
 import type { UsersRepository } from '@/domain/application/repositories/user-repository'
 import { DeleteUserUseCase } from '@/domain/application/use-cases/users/delete-user'
 import { isRight, unwrapEither } from '@/infra/shared/either'
+import { auth } from '../../middlewares/auth'
 
 export const deleteUserRoute: FastifyPluginAsyncZod<{
 	usersRepository: UsersRepository
 }> = async (server, opts) => {
 	const { usersRepository } = opts
 
-	server.delete(
-		'/users/:userId',
+	server.register(auth).delete(
+		'/:userId',
 		{
 			schema: {
 				tags: ['Users'],
 				summary: 'Delete an user by ID',
+				security: [{ bearerAuth: [] }],
 				params: z.object({
 					userId: z.uuid(),
 				}),

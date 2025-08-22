@@ -3,6 +3,7 @@ import { z } from 'zod'
 import type { UsersRepository } from '@/domain/application/repositories/user-repository'
 import { FetchAllUsersUseCase } from '@/domain/application/use-cases/users/fetch-all-users'
 import { isRight, unwrapEither } from '@/infra/shared/either'
+import { auth } from '../../middlewares/auth'
 import { UserPresenter } from '../../presenters/user-presenter'
 
 export const fetchAllUsersRoute: FastifyPluginAsyncZod<{
@@ -10,12 +11,13 @@ export const fetchAllUsersRoute: FastifyPluginAsyncZod<{
 }> = async (server, opts) => {
 	const { usersRepository } = opts
 
-	server.get(
-		'/users',
+	server.register(auth).get(
+		'',
 		{
 			schema: {
 				tags: ['Users'],
 				summary: 'Fetch all users',
+				security: [{ bearerAuth: [] }],
 				response: {
 					200: z.object({
 						users: z
