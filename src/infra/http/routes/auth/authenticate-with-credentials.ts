@@ -37,7 +37,15 @@ export const authenticateWithCredentialsRoute: FastifyPluginAsyncZod<{
 					{ sign: { expiresIn: '7d' } }
 				)
 
-				return reply.status(200).send({ token })
+				return reply
+					.setCookie('token', token, {
+						path: '/',
+						httpOnly: true,
+						sameSite: 'strict',
+						maxAge: 60 * 60 * 24, // 24 hours
+					})
+					.status(200)
+					.send({ token })
 			}
 
 			return reply.status(400).send({ message: 'Credenciais inválidas' })

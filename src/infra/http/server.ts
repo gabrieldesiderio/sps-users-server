@@ -1,3 +1,4 @@
+import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import { fastifySwagger } from '@fastify/swagger'
@@ -19,8 +20,12 @@ server.setSerializerCompiler(serializerCompiler)
 
 server.setErrorHandler(errorHandler)
 
+server.register(fastifyCookie)
+server.register(fastifyCors, {
+	origin: env.FRONT_END_URL,
+	credentials: true,
+})
 server.register(fastifyJwt, { secret: env.JWT_SECRET })
-server.register(fastifyCors, { origin: '*' })
 
 server.register(fastifySwagger, {
 	openapi: {
