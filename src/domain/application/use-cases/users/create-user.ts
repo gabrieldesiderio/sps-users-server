@@ -1,6 +1,5 @@
 import type { UsersRepository } from '@/domain/application/repositories/user-repository'
 import { User } from '@/domain/entities/user'
-import { Cryptography } from '@/infra/shared/cryptography'
 import { type Either, makeLeft, makeRight } from '@/infra/shared/either'
 import { ConflictError } from '../_errors/conflict'
 
@@ -28,13 +27,10 @@ export class CreateUserUseCase {
 			)
 		}
 
-		const crypto = new Cryptography()
-		const passwordHash = await crypto.hashPassword(password)
-
 		const user = User.create({
 			name,
 			email,
-			password: passwordHash,
+			password,
 			createdAt: new Date(),
 		})
 
